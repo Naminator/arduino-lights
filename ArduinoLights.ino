@@ -25,7 +25,7 @@ uint32_t getColor(uint8_t r, uint8_t g, uint8_t b)
 }
 
 void setup() {
-  delay (3000); // Power Up 3 second safety delay.
+  delay(3000); // Power Up 3 second safety delay.
 
   // Prepare sensors for read
   pinMode(PIN_PIR_DOWN, INPUT); // 5
