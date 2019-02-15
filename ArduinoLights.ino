@@ -86,17 +86,54 @@ void lights(int8_t order, boolean mode = true) {
 }
 
 void welcomeTestStrip() {
-  for (uint8_t i = 0; i < NUM_LEDS; i++) {
-    for (uint8_t j = 0; j < 230; j++) {
-      color = getColor(j, j, j);
-      strip.setPixelColor(i, color);
-      strip.show();
-      delay(2); // 2*255*NUM_LEDS = bootup time in ms
-    }
-  }
+
+  void testReds();
+
+  delay(750);
+
+  stripClear();
+  
+  void testGreens();
+
+  delay(750);
+
+  stripClear();
+  
+  void testBlues();
+
+  delay(750);
   
   // Test complete - shut down the strip
   stripClear();
+}
+
+void testReds() {
+  for(uint8_t i = 0; i < NUM_LEDS; i++) {
+    testColor(getColor(i, 0, 0));
+    delay(2);
+  }
+}
+
+void testGreens() {
+  for(uint8_t i = 0; i < NUM_LEDS; i++) {
+    testColor(getColor(0, i, 0));
+    delay(2);
+  }
+}
+
+void testBlues() {
+  for(uint8_t i = 0; i < NUM_LEDS; i++) {
+    testColor(getColor(0, 0, i));
+    delay(2);
+  }
+}
+
+void testColor(uint32_t color) {
+  for(uint8_t i = 0; i < NUM_LEDS; i++) {
+    strip.setPixelColor(i, color);
+  }
+
+  strip.show();
 }
 
 void stripClear() {
