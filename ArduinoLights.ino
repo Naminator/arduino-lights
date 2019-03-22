@@ -15,7 +15,6 @@
 
 Adafruit_WS2801 strip = Adafruit_WS2801(NUM_LEDS, PIN_LED_DATA, PIN_LED_CLOCK);
 
-uint8_t hue = 0;
 uint32_t color = 0;
 uint8_t sensorStatus = 0;
 
@@ -114,7 +113,7 @@ void welcomeTestStrip() {
 void testReds() {
   Serial.println("Testing the red shades");
   for (uint8_t i = 1; i <= 255; i++) {
-    uint32_t color = getColor(i, 0, 0);
+    color = getColor(i, 0, 0);
     testColor(color);
     delay(5);
   }
@@ -123,7 +122,7 @@ void testReds() {
 void testGreens() {
   Serial.println("Testing the green shades");
   for (uint8_t i = 1; i <= 255; i++) {
-    uint32_t color = getColor(0, i, 0);
+    color = getColor(0, i, 0);
     testColor(color);
     delay(5);
   }
@@ -132,7 +131,7 @@ void testGreens() {
 void testBlues() {
   Serial.println("Testing the blue shades");
   for (uint8_t i = 1; i <= 255; i++) {
-    uint32_t color = getColor(0, 0, i);
+    color = getColor(0, 0, i);
     testColor(color);
     delay(5);
   }
