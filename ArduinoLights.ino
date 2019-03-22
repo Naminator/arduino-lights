@@ -38,10 +38,17 @@ void setup() {
 
   // Initialize strip
   strip.begin();
+
+  stripClear();
+  
   strip.show();
+
+  delay(1000);
 
   // Run bootup test - Tests every color
   welcomeTestStrip();
+
+  Serial.println("Reading sensor input...");
 }
 
 void loop() {
@@ -87,7 +94,8 @@ void lights(int8_t order, boolean mode = true) {
 }
 
 void welcomeTestStrip() {
-
+  stripClear();
+  
   Serial.println("Beginning strip test");
   
   testReds();
@@ -112,29 +120,38 @@ void welcomeTestStrip() {
 
 void testReds() {
   Serial.println("Testing the red shades");
-  for (uint8_t i = 1; i <= 255; i++) {
-    color = getColor(i, 0, 0);
-    testColor(color);
-    delay(5);
+  
+  for (uint16_t i = 0; i < NUM_LEDS; i++) {
+    strip.setPixelColor(i, 255, 0, 0);
   }
+
+  strip.show();
+
+  delay(2000);
 }
 
 void testGreens() {
   Serial.println("Testing the green shades");
-  for (uint8_t i = 1; i <= 255; i++) {
-    color = getColor(0, i, 0);
-    testColor(color);
-    delay(5);
+  
+  for (uint16_t i = 0; i < NUM_LEDS; i++) {
+    strip.setPixelColor(i, 0, 255, 0);
   }
+
+  strip.show();
+
+  delay(2000);
 }
 
 void testBlues() {
   Serial.println("Testing the blue shades");
-  for (uint8_t i = 1; i <= 255; i++) {
-    color = getColor(0, 0, i);
-    testColor(color);
-    delay(5);
+  
+  for (uint16_t i = 0; i < NUM_LEDS; i++) {
+    strip.setPixelColor(i, 0, 0, 255);
   }
+
+  strip.show();
+
+  delay(2000);
 }
 
 void testColor(uint32_t color) {
