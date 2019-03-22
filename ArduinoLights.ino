@@ -25,6 +25,9 @@ uint32_t getColor(uint8_t r, uint8_t g, uint8_t b)
 }
 
 void setup() {
+  Serial.begin(9600);
+  Serial.println("Initializing serial communication...");
+  
   delay(3000); // Power Up 3 second safety delay.
 
   // Prepare sensors for read
@@ -60,9 +63,8 @@ void loop() {
 
 void lights(int8_t order, boolean mode = true) {
   int i = 0;
-  hue = mode ? 230 : 0;
-  color = getColor(hue, hue, hue); // This is the lightup color
-
+  color = mode ? getColor(230, 230, 230) : 0; // This is the lightup color
+  
   if (order == GO_UP) {
     for (i = 0; i < NUM_LEDS; i++) {
       strip.setPixelColor(i, color);
@@ -87,19 +89,21 @@ void lights(int8_t order, boolean mode = true) {
 
 void welcomeTestStrip() {
 
-  void testReds();
+  Serial.println("Beginning strip test");
+  
+  testReds();
 
   delay(750);
 
   stripClear();
   
-  void testGreens();
+  testGreens();
 
   delay(750);
 
   stripClear();
   
-  void testBlues();
+  testBlues();
 
   delay(750);
   
@@ -108,23 +112,29 @@ void welcomeTestStrip() {
 }
 
 void testReds() {
-  for(uint8_t i = 0; i < NUM_LEDS; i++) {
-    testColor(getColor(i, 0, 0));
-    delay(2);
+  Serial.println("Testing the red shades");
+  for (uint8_t i = 1; i <= 255; i++) {
+    uint32_t color = getColor(i, 0, 0);
+    testColor(color);
+    delay(5);
   }
 }
 
 void testGreens() {
-  for(uint8_t i = 0; i < NUM_LEDS; i++) {
-    testColor(getColor(0, i, 0));
-    delay(2);
+  Serial.println("Testing the green shades");
+  for (uint8_t i = 1; i <= 255; i++) {
+    uint32_t color = getColor(0, i, 0);
+    testColor(color);
+    delay(5);
   }
 }
 
 void testBlues() {
-  for(uint8_t i = 0; i < NUM_LEDS; i++) {
-    testColor(getColor(0, 0, i));
-    delay(2);
+  Serial.println("Testing the blue shades");
+  for (uint8_t i = 1; i <= 255; i++) {
+    uint32_t color = getColor(0, 0, i);
+    testColor(color);
+    delay(5);
   }
 }
 
