@@ -1,47 +1,42 @@
 #include <Adafruit_WS2801.h>
-#include <SPI.h>
 
-#define NUM_LEDS 24         // Total number of LEDs.
-#define LEDS_PER_STAIR 2    // Number of LEDs per stair. 
-
-#define PIN_LED_DATA 3      // LED Data pin
-#define PIN_LED_CLOCK 2     // LED Clock pin
-
-#define PIN_PIR_DOWN 6      // PIR Downstairs Pin
-#define PIN_PIR_UP 7        // PIR Upstairs Pin
+uint8_t num_LEDs = 24;
+uint8_t led_stairs = 2;
+uint8_t clockPin = 2;
+uint8_t dataPin = 3;
+uint8_t pirUpSensor = 6;
+uint8_t pirDownSensor = 7;
+uint32_t color = 0;
+uint8_t sensorStatus = 0;
 
 #define GO_UP -1            // Direction control - Arduino at top of stairs
 #define GO_DOWN 1           // Direction control - Arduino at top of stairs
 
-Adafruit_WS2801 strip = Adafruit_WS2801(NUM_LEDS, PIN_LED_DATA, PIN_LED_CLOCK);
-
-uint32_t color = 0;
-uint8_t sensorStatus = 0;
+Adafruit_WS2801 strip = Adafruit_WS2801(num_LEDs, dataPin, clockPin);
 
 uint32_t getColor(uint8_t r, uint8_t g, uint8_t b)
 {
   return ((((r << 8) | g) << 8) | b);
 }
 
+void lights(int8_t, boolean);
+void stripClear();
+
 void setup() {
   Serial.begin(9600);
   Serial.println("Initializing serial communication...");
   
-  delay(3000); // Power Up 3 second safety delay.
+  delay(2000); // Power Up 3 second safety delay.
 
   // Prepare sensors for read
-  pinMode(PIN_PIR_DOWN, INPUT); // 5
-  pinMode(PIN_PIR_UP, INPUT);  // 7
-
-  digitalWrite(PIN_PIR_DOWN, LOW);
-  digitalWrite(PIN_PIR_UP, LOW);
+  pinMode(pirDownSensor, INPUT); // 7
+  pinMode(pirUpSensor, INPUT);  // 6
 
   // Initialize strip
   strip.begin();
-
-  stripClear();
-  
   strip.show();
+  
+  stripClear();
 
   delay(1000);
 
@@ -49,48 +44,30 @@ void setup() {
   welcomeTestStrip();
 
   Serial.println("Reading sensor input...");
+
+  delay(1000);
+
+  Serial.println("Attempting test light up");
+
+  lightUp();
 }
 
 void loop() {
-  sensorStatus = digitalRead(PIN_PIR_DOWN);
+  /*sensorStatus = digitalRead(pirDownSensor);
 
   if (sensorStatus == HIGH) {
     lightUp();
     stripClear();
   }
 
-  sensorStatus = digitalRead(PIN_PIR_UP);
+  sensorStatus = digitalRead(pirUpSensor);
 
   if (sensorStatus == HIGH) {
     lightDown();
     stripClear();
-  }
-}
+  }*/
 
-void lights(int8_t order, boolean mode = true) {
-  int i = 0;
-  color = mode ? getColor(230, 230, 230) : 0; // This is the lightup color
-  
-  if (order == GO_UP) {
-    for (i = 0; i < NUM_LEDS; i++) {
-      strip.setPixelColor(i, color);
-      strip.show();
-
-      if (i % LEDS_PER_STAIR) {
-        delay(250);
-      }
-    }
-  }
-  else if (order == GO_DOWN) {
-    for (i = NUM_LEDS; --i >= 0 ; ) {
-      strip.setPixelColor(i, color);
-      strip.show();
-
-      if (i % NUM_LEDS) {
-        delay(300);
-      }
-    }
-  }
+  delay(250);
 }
 
 void welcomeTestStrip() {
@@ -103,12 +80,16 @@ void welcomeTestStrip() {
   delay(750);
 
   stripClear();
+
+  delay(25);
   
   testGreens();
 
   delay(750);
 
   stripClear();
+
+  delay(25);
   
   testBlues();
 
@@ -116,16 +97,17 @@ void welcomeTestStrip() {
   
   // Test complete - shut down the strip
   stripClear();
+
+  delay(25);
 }
 
 void testReds() {
   Serial.println("Testing the red shades");
   
-  for (uint16_t i = 0; i < NUM_LEDS; i++) {
-    strip.setPixelColor(i, 255, 0, 0);
+  for (uint16_t i = 0; i < num_LEDs; i++) {
+    strip.setPixelColor(i, 230, 0, 0);
+    strip.show();
   }
-
-  strip.show();
 
   delay(2000);
 }
@@ -133,11 +115,10 @@ void testReds() {
 void testGreens() {
   Serial.println("Testing the green shades");
   
-  for (uint16_t i = 0; i < NUM_LEDS; i++) {
-    strip.setPixelColor(i, 0, 255, 0);
+  for (uint16_t i = 0; i < num_LEDs; i++) {
+    strip.setPixelColor(i, 0, 230, 0);
+    strip.show();
   }
-
-  strip.show();
 
   delay(2000);
 }
@@ -145,33 +126,25 @@ void testGreens() {
 void testBlues() {
   Serial.println("Testing the blue shades");
   
-  for (uint16_t i = 0; i < NUM_LEDS; i++) {
-    strip.setPixelColor(i, 0, 0, 255);
+  for (uint16_t i = 0; i < num_LEDs; i++) {
+    strip.setPixelColor(i, 0, 0, 230);
+    strip.show();
   }
-
-  strip.show();
 
   delay(2000);
 }
 
-void testColor(uint32_t color) {
-  for(uint8_t i = 0; i < NUM_LEDS; i++) {
-    strip.setPixelColor(i, color);
-  }
-
-  strip.show();
-}
-
 void stripClear() {
-  for(uint8_t i = 0; i < NUM_LEDS; i++) {
-    strip.setPixelColor(i, 0);
+  for(uint16_t i = 0; i < num_LEDs; i++) {
+    strip.setPixelColor(i, 0, 0, 0);
+    strip.show();
   }
-
-  strip.show();
 }
 
 void lightUp() {
   stripClear();
+
+  Serial.println("Lights go up");
 
   lights(GO_UP, true); // Turn the lights on with delays
   
@@ -183,9 +156,38 @@ void lightUp() {
 void lightDown() {
   stripClear();
 
+  Serial.println("Lights go down");
+
   lights(GO_DOWN, true); // Turn the lights on
 
   delay(15000); // Wait for 15 seconds to allow the person to climb down
 
   lights(GO_DOWN, false); // Turn the lights off
+}
+
+void lights(int8_t order, boolean mode = true) {
+  int i = 0;
+  
+  color = mode ? getColor(230, 230, 230) : 0; // This is the lightup color
+  
+  if (order == GO_UP) {
+    for (i = 0; i < num_LEDs; i++) {
+      strip.setPixelColor(i, color);
+      strip.show();
+
+      if (i % led_stairs) {
+        delay(250);
+      }
+    }
+  }
+  else if (order == GO_DOWN) {
+    for (i = num_LEDs; --i >= 0 ; ) {
+      strip.setPixelColor(i, color);
+      strip.show();
+
+      if (i % led_stairs) {
+        delay(300);
+      }
+    }
+  }
 }
