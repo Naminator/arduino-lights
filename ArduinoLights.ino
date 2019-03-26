@@ -46,14 +46,10 @@ void setup() {
   Serial.println("Reading sensor input...");
 
   delay(1000);
-
-  Serial.println("Attempting test light up");
-
-  lightUp();
 }
 
 void loop() {
-  /*sensorStatus = digitalRead(pirDownSensor);
+  sensorStatus = digitalRead(pirDownSensor);
 
   if (sensorStatus == HIGH) {
     lightUp();
@@ -65,7 +61,7 @@ void loop() {
   if (sensorStatus == HIGH) {
     lightDown();
     stripClear();
-  }*/
+  }
 
   delay(250);
 }
@@ -135,8 +131,12 @@ void testBlues() {
 }
 
 void stripClear() {
+  stripColor(0);
+}
+
+void stripColor(uint32_t color) {
   for(uint16_t i = 0; i < num_LEDs; i++) {
-    strip.setPixelColor(i, 0, 0, 0);
+    strip.setPixelColor(i, color);
     strip.show();
   }
 }
@@ -176,7 +176,7 @@ void lights(int8_t order, boolean mode = true) {
       strip.show();
 
       if (i % led_stairs) {
-        delay(250);
+        delay(500);
       }
     }
   }
@@ -186,7 +186,7 @@ void lights(int8_t order, boolean mode = true) {
       strip.show();
 
       if (i % led_stairs) {
-        delay(300);
+        delay(350);
       }
     }
   }
