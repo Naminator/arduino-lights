@@ -181,12 +181,12 @@ void lights(int8_t order, boolean mode = true) {
     }
   }
   else if (order == GO_DOWN) {
-    for (i = num_LEDs; --i >= 0 ; ) {
+    for (i = (num_LEDs - 1); i >= 0; i--) {
       strip.setPixelColor(i, color);
       strip.show();
 
-      if (i % led_stairs) {
-        delay(350);
+      if (i % led_stairs == 0) {
+        delay(400);
       }
     }
   }
